@@ -29,6 +29,8 @@
 # - F5-BIGIP-SYSTEM-MIB::sysVlanxStat
 # - seems VLANs are present in the ifxtable. They are picked up by the if64 native check
 # Trunk stats
+# - F5-BIGIP-SYSTEM-MIB::sysTrunk
+# - F5-BIGIP-SYSTEM-MIB::sysTrunkStat
 # remove looseversion requirement http://lists.mathias-kettner.de/pipermail/checkmk-en/2013-January/008361.html
 
 
