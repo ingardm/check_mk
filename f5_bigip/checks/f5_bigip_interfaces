@@ -24,6 +24,14 @@
 # to the Free Software Foundation, Inc., 51 Franklin St,  Fifth Floor,
 # Boston, MA 02110-1301 USA.
 
+# TODO
+# Look at VLAN stats https://devcentral.f5.com/questions/snmp-vlan-statistics
+# - F5-BIGIP-SYSTEM-MIB::sysVlanxStat
+# - seems VLANs are present in the ifxtable. They are picked up by the if64 native check
+# Trunk stats
+# remove looseversion requirement http://lists.mathias-kettner.de/pipermail/checkmk-en/2013-January/008361.html
+
+
 # .1.3.6.1.4.1.3375.2.1.2.4.5.3.1.1   index for ifname
 # .1.3.6.1.4.1.3375.2.1.2.4.1.2.1.17  index for ifstate
 # .1.3.6.1.4.1.3375.2.1.2.4.5.3.1.10  index for IN bytes
