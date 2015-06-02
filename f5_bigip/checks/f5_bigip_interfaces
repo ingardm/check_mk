@@ -48,8 +48,12 @@ def check_f5_bigip_interfaces(item, params, info):
                     (f5_bigip_interface_states.get(ifstate, "unhandled (%d)" % ifstate), port))
 
         this_time = int(time.time())
-        in_per_sec  = get_rate("f5_interface.in.%s" % item,  this_time, saveint(inbytes))
-        out_per_sec  = get_rate("f5_interface.out.%s" % item,  this_time, saveint(outbytes))
+
+        # get_rate does not exist in OMD 1.20
+        #in_per_sec  = get_rate("f5_interface.in.%s" % item,  this_time, saveint(inbytes))
+        #out_per_sec  = get_rate("f5_interface.out.%s" % item,  this_time, saveint(outbytes))
+        in_timedif,  in_per_sec  = get_counter("f5.interface.in.%s" % item,  this_time, saveint(inbytes))
+        out_timedif,  out_per_sec  = get_counter("f5_interface.out.%s" % item,  this_time, saveint(outbytes))
 
         inbytes_h = get_bytes_human_readable(in_per_sec)
         outbytes_h = get_bytes_human_readable(out_per_sec)
