@@ -39,6 +39,7 @@ f5_bigip_interface_states = {
 
 
 def check_f5_bigip_interfaces(item, params, info):
+    #import pprint; pprint.pprint(info)
     for port, ifstate, inbytes, outbytes in info:
         if item != port:
             continue
@@ -65,12 +66,24 @@ def check_f5_bigip_interfaces(item, params, info):
     return 3, "Interface not found in SNMP data"
 
 
+from distutils.version import LooseVersion
+
+# !!! Bug in LTM 11.5.1 for 2000/4000 platforms
+# https://support.f5.com/kb/en-us/solutions/public/16000/000/sol16064.html
+
+# Behavior change from 11.2.0 and onwards
+# IF-MIB::ifHCInOctets has been replaced with F5-BIGIP-SYSTEM-MIB::sysIfxStatHCInOctets
+# IF-MIB::ifHCOutOctets has been replaced with F5-BIGIP-SYSTEM-MIB::sysIfxStatHCOutOctets
+#
+# https://support.f5.com/kb/en-us/solutions/public/14000/400/sol14473.html
+#
+# NOTE : ifHCInOctets is present on version 11.5.4 (at least on platform bigip5250)
+
 check_info["f5_bigip_interfaces"] = {
     "check_function"        : check_f5_bigip_interfaces,
-    "inventory_function"    : lambda info: [ (x[0], {'state': 0 } ) for x in info if int(x[1]) == 0],
+    "inventory_function"    : lambda info: [ (x[0], {'state': 0 } ) for x in info if (int(x[1]) == 0 and x[0])],
     "service_description"   : "f5 Interface %s",
     "has_perfdata"          : True,
-    "snmp_scan_function"    : lambda oid: oid(".1.3.6.1.2.1.1.2.0") in \
-                                [ ".1.3.6.1.4.1.3375.2.1.3.4.10", ".1.3.6.1.4.1.3375.2.1.3.4.20" ],
-    "snmp_info"             : ( ".1.3.6.1.4.1.3375.2.1.2.4", ["4.3.1.1", "1.2.1.17", "4.3.1.3", "4.3.1.5"]),
+    "snmp_scan_function"    : lambda oid: '.1.3.6.1.4.1.3375.2' in oid(".1.3.6.1.2.1.1.2.0") and "big-ip" in oid(".1.3.6.1.4.1.3375.2.1.4.1.0").lower() and LooseVersion(oid(".1.3.6.1.4.1.3375.2.1.4.2.0")) >= LooseVersion("11.2.0"),
+    "snmp_info"             : ( ".1.3.6.1.4.1.3375.2.1.2.4", ["5.3.1.1", "1.2.1.17", "5.3.1.10", "5.3.1.6"]),
 }
